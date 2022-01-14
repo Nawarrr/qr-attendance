@@ -8,14 +8,15 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Start a Session !</title>
+    <title>{{ course_name }}</title>
     
   </head>
   <body style="background-color: white;">
-    <h1>Welcome</h1>
-    <form action="/submitform" method="post">
-        <input type="text" name="course_name">
-        <input type="text" name="instructor_name">
+    <h1>{{course_name}} </h1>
+    <h2>by {{instructor_name}}</h2>
+    <form action="/student" method="post">
+        <input type="text" name="name">
+        <input type="text" name="email">
         <input type="submit">
     </form>>
     
