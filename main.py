@@ -4,7 +4,7 @@ from fastapi.responses import HTMLResponse
 import qrcode
 #import forms 
 from datetime import datetime 
-#import pandas as pd 
+#import csv
 import schemas ,models
 from database import engine , SessionLocal
 from sqlalchemy.orm.session import Session
@@ -48,26 +48,26 @@ def show_data(id:int):
 
 @app.get('/qr',response_class=HTMLResponse )
 def qr(id:int,class_name:str ,instructor_name:str ,request:Request):
-
+    # Auth2
     auth_link = " ZBI "
     qr_img = qrcode.make(auth_link)
-    return templates.TemplateResponse('session.html', {'request' : request , 'class_name' : class_name , 'instructor_name' : instructor_name})
+    return templates.TemplateResponse('session.html', {'request' : request , 'class_name' : class_name , 'instructor_name' : instructor_name , 'qr_img' : qr_img})
     
 
-@app.get('/csv')
-def make_csv(id:int):
-    #Qurey from data base
-    pass
+# @app.get('/csv')
+# def make_csv(id:int):
+#     #Qurey from data base into dict 
+#     labels = ['First Name','Last Name','E-mail','Date']
+#     with open(f'{id}.csv', 'w') as csvfile:
+#         writer = csv.DictWriter(csvfile, fieldnames = labels)
+#         writer.writeheader()
+#         writer.writerows(cars)
 
 @app.post('/attendace',response_class=HTMLResponse)
 def add_student(id:int):
     pass
 
-# @app.get('/session' , response_model=schemas.Session , response_class=HTMLResponse)
-# def session(request : Request):
-#     course_name = 'course_1'
-#     instructor = "instructor_1"
-#     return templates.TemplateResponse("session.html" , {"request" : request , "course_name" : course_name , 'instructor_name' : instructor})
+
 
 # @app.post("/student")
 # async def student_form(request : forms.StudentForm):
