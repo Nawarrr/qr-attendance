@@ -1,6 +1,7 @@
 from fastapi import FastAPI , Request, Form , Depends
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
+from httpcore import URL
 import qrcode
 #import forms 
 from datetime import datetime
@@ -73,24 +74,25 @@ async def handle_form(request : Request ,class_name : str = Form(...) , instruct
     db.add(new_session)
     db.commit()
     db.refresh(new_session)
-    session_id = new_session.id
-    return RedirectResponse(url=f'/qr/{session_id}')
-    #return qr(request , new_session.id , new_session.class_name , new_session.instructor_name) #templates.TemplateResponse("session.html" , {'request' : request})
+    #session_id = new_session.id
+    #return RedirectResponse(url=f'/qr/{session_id}')
+    return show_qr(request , new_session.id ) #templates.TemplateResponse("session.html" , {'request' : request})
 
 
 # @app.get('/data',response_class=HTMLResponse)
 # def show_data(id:int):
 #     pass
 
-@app.post('/qr/{id}')
+@app.post('/qr/{id}' , response_class=HTMLResponse)
 def show_qr(request: Request, id:str ):
-
-    auth_link = f"/qr/{id}/login"
+    url = os.environ.get('URL')
+    auth_link = f"{url}/qr/{id}/login"
+    
     img = qrcode.make(auth_link)
-    img.save("img.png")
-    print(img.save("img.png"))
-    return templates.TemplateResponse('session.html', { 'request' : request , 'qr_img' : '../app/img.png'})
-    #return StreamingResponse(io.BytesIO(im_png.tobytes()), media_type="image/png")
+    #img.save("img.png")
+    #image_file = request.url_for('static', filename="img.png")
+
+    return templates.TemplateResponse('session.html', { 'request' : request  }) , StreamingResponse(io.BytesIO(img.tobytes()), media_type="image/png")
 # def gen_qr(auth_link):
 #     img = qrcode.make(auth_link)
 #     #qr_img = img.save("img.png")
