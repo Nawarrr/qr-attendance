@@ -65,35 +65,36 @@ def get_db():
         db.close()
 
 
-@app.get('/' , response_class=HTMLResponse)
+@app.get('/' , response_class=HTMLResponse, tags=['instructor'])
 def home(request : Request):
     '''
     Homepage Template
     '''
     return templates.TemplateResponse("home.html" , {"request" : request})
 
-@app.post('/create' , status_code=201)
+@app.post('/create' , status_code=201, tags=['instructor'])
 async def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(get_db)):
-    # url = os.environ.get('URL')
-    # auth_link = f"{url}/qr/{id}/login"
 
-    # img = qrcode.make(auth_link)
-    # img.save("img.png")
     
     date_time = datetime.now()
     new_session = models.Class(class_name= class_name , instructor_name= instructor_name , date_time=date_time)  #, qr_picture=img)
     db.add(new_session)
     db.commit()
     db.refresh(new_session)
-    
+
+    url = os.environ.get('URL')
+    auth_link = f"{url}/login/{new_session.id}"
+
+    img = qrcode.make(auth_link)
+    img.save("img.png")
     # -------------------------------- #
 
     
     #session_id = new_session.id
     #return RedirectResponse(url=f'/qr/{session_id}')
-    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session.id})
+    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session.id , 'img' : "../app/img.png" , 'link' : auth_link})
 
-@app.get('/create')
+@app.get('/create' , tags=['instructor'])
 def show_session(request: Request):
     return templates.TemplateResponse("session.html" , {'request' : request})
 
@@ -121,14 +122,15 @@ def show_session(request: Request):
 #     pass
 
 
-@app.route('/qr/{id}/login')
-async def login(request: Request , id:int):
+@app.route('/login/{id}')
+async def login( id:int , request : Request  ):
+    print(request , id)
     redirect_uri = request.url_for('auth')  # This creates the url for the /auth endpoint
     return await oauth.google.authorize_redirect(request, redirect_uri + f"/{id}")
 
 
 @app.route('/auth/{id}')
-async def auth(request: Request , id:int):
+async def auth( id :int , request : Request ):
     try:
         access_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
@@ -138,13 +140,13 @@ async def auth(request: Request , id:int):
     return RedirectResponse(url='/student/{id}')
 
 
-@app.get('/student/{id}')
+@app.get('/student/{id}' , tags=['student'])
 def student_page(request:Request):
 
     return templates.TemplateResponse("student.html" , {"request" : request})
 
 
-@app.post('/student/{id}')
+@app.post('/student/{id}' , tags=['student'])
 def student_form(request : Request,  id : int   ,student_name : str = Form(...) , student_info : str = Form(...),db : Session = Depends(get_db) ):
     new_session = models.Student(student_name= student_name ,  student_info= student_info , class_id=id )
     db.add(new_session)
@@ -152,22 +154,18 @@ def student_form(request : Request,  id : int   ,student_name : str = Form(...) 
     db.refresh(new_session)
     return templates.TemplateResponse("thankyou.html" , {'request' : request})
 
-@app.get('/download/{id}')
+@app.post('/download/{id}' , tags=['instructor'])
 def download_csv(request : Request, id:int ,db : Session = Depends(get_db)):
     
-    
-    #outfile = open('../templates/attendance.csv', 'wb')
-    #outcsv = csv.writer(outfile , dialect='unix')
     records = db.query(models.Student).filter(models.Student.class_id==id).all()
     print(records)
-    df = pd.DataFrame(  [0,0] , index= ['Student Name' , 'Student Info'] )
+    df = pd.DataFrame(columns= ['Student Name' , 'Student Info'] )
     for i ,record in enumerate(records):
-        print(df)
         df.loc[i]= [ record.student_name , record.student_info] 
-        #outcsv.writerow([record.student_name , record.student_info])
-    #utcsv.writerows(records)
+
     df.to_csv('../templates/attendance.csv')
-    #return templates.TemplateResponse("thankyou.html" , {'request' : request})
+    return templates.TemplateResponse("session.html" , {'request' : request})
+
 
 
 
