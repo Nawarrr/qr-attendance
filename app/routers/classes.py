@@ -19,9 +19,11 @@ templates = Jinja2Templates(directory="../templates")
 
 @router.get('/' , response_class=HTMLResponse)
 def home(request : Request):
-    '''
-    Homepage Template
-    '''
+    """Homepage Template
+
+    :param request : Request: 
+
+    """
     return templates.TemplateResponse("home.html" , {"request" : request})
 
 
@@ -29,7 +31,14 @@ def home(request : Request):
 
 @router.post('/create' , status_code=201)
 async def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(database.get_db)):
+    """
 
+    :param request : Request: 
+    :param class_name:str:
+    :param instructor_name:str: 
+    :param db : Session:  (Default value = Depends(database.get_db))
+
+    """
     
     new_session_id , auth_link = insert_class_toDB(class_name , instructor_name , db)
 
@@ -40,12 +49,23 @@ async def handle_form(request : Request ,class_name : str = Form(...) , instruct
 
 @router.get('/create' , tags=['instructor'])
 def show_session(request: Request):
+    """
+
+    :param request: Request: 
+
+    """
     return templates.TemplateResponse("session.html" , {'request' : request})
 
 
 @router.post('/download/{id}' , tags=['instructor'])
 def download_csv(request : Request, id:int ,db : Session = Depends(database.get_db)):
-    
+    """
+
+    :param request : Request: 
+    :param id:int: 
+    :param db : Session:  (Default value = Depends(database.get_db))
+
+    """
     query_create_csv(id , db)
 
     return templates.TemplateResponse("session.html" , {'request' : request})
