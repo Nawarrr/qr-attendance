@@ -1,3 +1,4 @@
 qr-attendance-venv
 __pycache__
+app/.env
 .env
