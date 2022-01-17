@@ -1,13 +1,16 @@
+from hashlib import new
 from fastapi import FastAPI , Request, Form , Depends
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse , FileResponse
 from httpcore import URL
 import qrcode
 #import forms 
 from datetime import datetime
+import csv
+import pandas as pd
+import uvicorn
+from models import Student 
 
-import uvicorn 
-#import pandas as pd 
 import schemas ,models
 from database import engine , SessionLocal
 from sqlalchemy.orm.session import Session
@@ -19,6 +22,8 @@ from starlette.responses import RedirectResponse ,StreamingResponse
 from authlib.integrations.starlette_client import OAuthError
 from dotenv import load_dotenv
 import io
+from PIL import ImageSequence
+from qrcodegen import *
 load_dotenv()
 
 models.Base.metadata.create_all(bind=engine)
@@ -69,30 +74,43 @@ def home(request : Request):
 
 @app.post('/create' , status_code=201)
 async def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(get_db)):
+    # url = os.environ.get('URL')
+    # auth_link = f"{url}/qr/{id}/login"
+
+    # img = qrcode.make(auth_link)
+    # img.save("img.png")
+    
     date_time = datetime.now()
-    new_session = models.Class(class_name= class_name , instructor_name= instructor_name , date_time=date_time)
+    new_session = models.Class(class_name= class_name , instructor_name= instructor_name , date_time=date_time)  #, qr_picture=img)
     db.add(new_session)
     db.commit()
     db.refresh(new_session)
+    
+    # -------------------------------- #
+
+    
     #session_id = new_session.id
     #return RedirectResponse(url=f'/qr/{session_id}')
-    return show_qr(request , new_session.id ) #templates.TemplateResponse("session.html" , {'request' : request})
+    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session.id})
 
+@app.get('/create')
+def show_session(request: Request):
+    return templates.TemplateResponse("session.html" , {'request' : request})
 
 # @app.get('/data',response_class=HTMLResponse)
 # def show_data(id:int):
 #     pass
 
-@app.post('/qr/{id}' , response_class=HTMLResponse)
-def show_qr(request: Request, id:str ):
-    url = os.environ.get('URL')
-    auth_link = f"{url}/qr/{id}/login"
+# @app.post('/qr/{id}' , response_class=HTMLResponse)
+# def show_qr(request: Request, id:str ):
+#     url = os.environ.get('URL')
+#     auth_link = f"{url}/qr/{id}/login"
     
-    img = qrcode.make(auth_link)
-    #img.save("img.png")
-    #image_file = request.url_for('static', filename="img.png")
+#     img = qrcode.make(auth_link)
+#     #img.save("img.png")
+#     #image_file = request.url_for('static', filename="img.png")
 
-    return templates.TemplateResponse('session.html', { 'request' : request  }) , StreamingResponse(io.BytesIO(img.tobytes()), media_type="image/png")
+#     return templates.TemplateResponse('session.html', { 'request' : request  }) , StreamingResponse(io.BytesIO(img.tobytes()), media_type="image/png")
 # def gen_qr(auth_link):
 #     img = qrcode.make(auth_link)
 #     #qr_img = img.save("img.png")
@@ -104,26 +122,52 @@ def show_qr(request: Request, id:str ):
 
 
 @app.route('/qr/{id}/login')
-async def login(request: Request):
+async def login(request: Request , id:int):
     redirect_uri = request.url_for('auth')  # This creates the url for the /auth endpoint
-    return await oauth.google.authorize_redirect(request, redirect_uri)
+    return await oauth.google.authorize_redirect(request, redirect_uri + f"/{id}")
 
 
-@app.route('/auth')
-async def auth(request: Request):
+@app.route('/auth/{id}')
+async def auth(request: Request , id:int):
     try:
         access_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
         return RedirectResponse(url='/')
     user_data = await oauth.google.parse_id_token(request, access_token)
     request.session['user'] = dict(user_data)
-    return RedirectResponse(url='/qr')
+    return RedirectResponse(url='/student/{id}')
 
 
+@app.get('/student/{id}')
+def student_page(request:Request):
+
+    return templates.TemplateResponse("student.html" , {"request" : request})
 
 
+@app.post('/student/{id}')
+def student_form(request : Request,  id : int   ,student_name : str = Form(...) , student_info : str = Form(...),db : Session = Depends(get_db) ):
+    new_session = models.Student(student_name= student_name ,  student_info= student_info , class_id=id )
+    db.add(new_session)
+    db.commit()
+    db.refresh(new_session)
+    return templates.TemplateResponse("thankyou.html" , {'request' : request})
 
-
+@app.get('/download/{id}')
+def download_csv(request : Request, id:int ,db : Session = Depends(get_db)):
+    
+    
+    #outfile = open('../templates/attendance.csv', 'wb')
+    #outcsv = csv.writer(outfile , dialect='unix')
+    records = db.query(models.Student).filter(models.Student.class_id==id).all()
+    print(records)
+    df = pd.DataFrame(  [0,0] , index= ['Student Name' , 'Student Info'] )
+    for i ,record in enumerate(records):
+        print(df)
+        df.loc[i]= [ record.student_name , record.student_info] 
+        #outcsv.writerow([record.student_name , record.student_info])
+    #utcsv.writerows(records)
+    df.to_csv('../templates/attendance.csv')
+    #return templates.TemplateResponse("thankyou.html" , {'request' : request})
 
 
 
