@@ -1,3 +1,8 @@
 qr-attendance-venv
 __pycache__
+<<<<<<< HEAD
 run.sh
+=======
+app/.env
+.env
+>>>>>>> 104da654b8f957bd0b493a3f862167683279c4ce

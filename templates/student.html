@@ -8,22 +8,17 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>{{ class_name }}</title>
+    <title>Class Attendance</title>
     
   </head>
   <body style="background-color: white;">
-    <h1>{{class_name}} </h1>
-    <h2>by {{instructor_name}}</h2>
-<<<<<<< HEAD
-    <img alt="It's here " src='img.png'/>
-=======
-    <img src= {{ img }} alt= {{ link }}>
-  <form action="/download/{{ id }}" method="post">
-    <input type="submit">
-</form>>
-   <a href="attendance" download>Download</a>
+    <h1>Please Enter Your Name</h1>
+    <form action="/create" method="post">
 
->>>>>>> 104da654b8f957bd0b493a3f862167683279c4ce
+        <input type="text" name="student_name">
+        <input type="text" name="student_info">
+        <input type="submit">
+    </form>>
     
   </body>
 </html>
