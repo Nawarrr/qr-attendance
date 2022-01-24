@@ -30,7 +30,7 @@ def home(request : Request):
 
 
 @router.post('/create' , status_code=201)
-async def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(database.get_db)):
+def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(database.get_db)):
     """
 
     :param request : Request: 
@@ -40,9 +40,9 @@ async def handle_form(request : Request ,class_name : str = Form(...) , instruct
 
     """
     
-    new_session_id , auth_link = insert_class_toDB(class_name , instructor_name , db)
+    new_session_id , auth_link , img_tag = insert_class_toDB(class_name , instructor_name , db)
 
-    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session_id , 'img' : "../app/img.png" , 'link' : auth_link})
+    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session_id , 'img' : img_tag , 'link' : auth_link} )
 
 
 
