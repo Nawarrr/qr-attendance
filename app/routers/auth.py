@@ -30,19 +30,20 @@ oauth.register(
 
 
 @router.get('/login/{id}' )
-async def login(  id:int  ,request : Request  ):
-    print("here")
-    redirect_uri = request.url_for('auth/{id}')  # This creates the url for the /auth endpoint
-    print(redirect_uri)
-    return await oauth.google.authorize_redirect(request, redirect_uri )
+async def login(   id:int  ,request : Request  ):
+
+    #redirect_uri = request.url_for('auth')  # This creates the url for the /auth endpoint
+    redirect_uri = os.environ.get('URL') + "/auth"
+
+    return await oauth.google.authorize_redirect(request, redirect_uri ) 
 
 
-@router.route('/auth/{id}'  )
-async def auth( id:int , request : Request ):
+@router.route('/auth')
+async def auth( request : Request ):
     try:
         access_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
         return RedirectResponse(url='/')
     user_data = await oauth.google.parse_id_token(request, access_token)
     request.session['user'] = dict(user_data)
-    return RedirectResponse(url='/student/{id}')
+    return RedirectResponse(url='/')
