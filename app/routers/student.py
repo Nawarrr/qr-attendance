@@ -3,7 +3,7 @@ from fastapi import APIRouter , Request , Form , Depends
 
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm.session import Session
-from logic.student import student_attendance
+from logic.student import take_student_attendance
 
 import database
 
@@ -36,5 +36,5 @@ def student_form(request : Request,  id : int   ,student_name : str = Form(...) 
     :param db : Session:  (Default value = Depends(database.get_db))
 
     """
-    student_attendance(id, student_name,student_info,db)
+    take_student_attendance(id, student_name,student_info,db)
     return templates.TemplateResponse("thankyou.html" , {'request' : request})

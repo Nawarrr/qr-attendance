@@ -1,5 +1,5 @@
 from fastapi import APIRouter , Request , Form , Depends
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse , FileResponse
 from fastapi.templating import Jinja2Templates
 
 from logic.classes import insert_class_toDB , query_create_csv
@@ -30,7 +30,7 @@ def home(request : Request):
 
 
 @router.post('/create' , status_code=201)
-def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(database.get_db)):
+async def handle_form(request : Request ,class_name : str = Form(...) , instructor_name : str = Form(...)  ,db : Session = Depends(database.get_db)):
     """
 
     :param request : Request: 
@@ -40,21 +40,21 @@ def handle_form(request : Request ,class_name : str = Form(...) , instructor_nam
 
     """
     
-    new_session_id , auth_link , img_tag = insert_class_toDB(class_name , instructor_name , db)
-
-    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session_id , 'img' : img_tag , 'link' : auth_link} )
-
-
+    new_session_id , auth_link  = await insert_class_toDB(class_name , instructor_name , db)
+    return templates.TemplateResponse("session.html" , {'request' : request , "id" : new_session_id , 'link' : auth_link ,
+                                                        'class_name' : class_name , 'instructor_name' : instructor_name} )
 
 
-@router.get('/create' , tags=['instructor'])
-def show_session(request: Request):
+
+
+@router.get('/img.png' , tags=['instructor'])
+def show_session():
     """
 
     :param request: Request: 
 
     """
-    return templates.TemplateResponse("session.html" , {'request' : request})
+    return FileResponse('../templates/img.png') 
 
 
 @router.post('/download/{id}' , tags=['instructor'])

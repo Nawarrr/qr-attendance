@@ -1,6 +1,6 @@
 import models
 
-def student_attendance(id:int, student_name:str , student_info:str , db):
+def take_student_attendance(id:int, student_name:str , student_info:str , db):
     """
 
     :param id:int: 

@@ -6,7 +6,7 @@ import qrcode
 import pandas as pd
 
 
-def insert_class_toDB(class_name:str , instructor_name:str , db):   
+async def insert_class_toDB(class_name:str , instructor_name:str , db):   
     """
 
     :param class_name:str: 
@@ -26,10 +26,10 @@ def insert_class_toDB(class_name:str , instructor_name:str , db):
     img = qrcode.make(auth_link )
 
     img.save("../templates/img.png") 
-   
+    
 
 
-    return new_session.id , auth_link , img
+    return new_session.id , auth_link 
 
 def query_create_csv(id:int,db):
     """
