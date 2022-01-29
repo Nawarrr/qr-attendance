@@ -17,16 +17,4 @@ app.include_router(classes.router)
 
 app.include_router(student.router)
 
-# TO DO 
-
-# AUTHENTICATION CURRENTLY UNDER WORK 
-
-# app.include_router(auth.router)
-
-
-# SECRET_KEY = os.environ.get('SECRET_KEY') or None
-# if SECRET_KEY is None:
-#     raise 'Missing SECRET_KEY'
-# app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
-
 
