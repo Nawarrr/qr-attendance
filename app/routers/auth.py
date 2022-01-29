@@ -1,4 +1,5 @@
-from fastapi import APIRouter ,Request
+from fastapi import APIRouter
+from starlette.requests import Request
 import os
 from starlette.config import Config
 from authlib.integrations.starlette_client import OAuth
@@ -30,20 +31,24 @@ oauth.register(
 
 
 @router.get('/login/{id}' )
-async def login(   id:int  ,request : Request  ):
+async def login(id:int , request : Request ):
 
     #redirect_uri = request.url_for('auth')  # This creates the url for the /auth endpoint
     redirect_uri = os.environ.get('URL') + "/auth"
-
+    request.session['id'] = id
+    #print(request.state.id)
+    print(request.session.id)
     return await oauth.google.authorize_redirect(request, redirect_uri ) 
 
 
 @router.route('/auth')
 async def auth( request : Request ):
+    print(request.url)
     try:
         access_token = await oauth.google.authorize_access_token(request)
     except OAuthError:
         return RedirectResponse(url='/')
     user_data = await oauth.google.parse_id_token(request, access_token)
     request.session['user'] = dict(user_data)
-    return RedirectResponse(url='/')
+    print(request.session.id)
+    return RedirectResponse(url=f'/student')

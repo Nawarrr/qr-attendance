@@ -13,12 +13,12 @@
   </head>
   <body style="background-color: white;">
     <h1>Please Enter Your Name</h1>
-    <form action="/create" method="post">
+    <form action="/student/{{ session_id }}" method="post">
 
         <input type="text" name="student_name">
         <input type="text" name="student_info">
         <input type="submit">
     </form>>
-    
+
   </body>
 </html>
