@@ -2,8 +2,9 @@
 
 QR Attendance is a web app that helps you take the attendance with just a quick qr scan from the students
 
+
 ## How to use it ?
-- Currently not functional but will be done ASAP
+- Currently not functional as It must be deployed for people to use it 
 
 
 ## User Stories
