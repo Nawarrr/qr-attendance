@@ -19,6 +19,7 @@ QR Attendance is a web app that helps you take the attendance with just a quick 
 
 
 ## Future Features
+- Authentication for students to assure integrity in the Attendance Taking
 - Database Deletion
 - Better styled website
 - Starting a course and keep track for every session in that course 
