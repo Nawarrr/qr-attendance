@@ -4,7 +4,7 @@ from starlette.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm.session import Session
 from logic.student import take_student_attendance
-from .auth import login
+
 import database
 
 
