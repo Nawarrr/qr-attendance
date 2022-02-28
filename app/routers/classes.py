@@ -21,6 +21,10 @@ def home(request: Request):
     """
     return templates.TemplateResponse("home.html", {"request": request})
 
+# ---------------------------------------------------DECLARATION-------------------------------- I've Failed using Static Files so I will do This till I fix it--------------------------#
+@router.get('/style.css')
+def show_css():
+    return FileResponse('../templates/style.css')
 
 @router.post('/create', status_code=201)
 def handle_form(request: Request, class_name: str = Form(...), instructor_name: str = Form(...), db: Session = Depends(database.get_db)):
