@@ -6,18 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
 
     <title>Start a Session !</title>
     
   </head>
   <body style="background-color: white;">
-    <h1>Welcome</h1>
-    <form action="/create" method="post">
-        <input type="text" name="class_name">
-        <input type="text" name="instructor_name">
-        <input type="submit">
-    </form>>
+
+    <form action="/create" method="post" class="form">
+        <fieldset>
+       
+          <legend>Welcome</legend>
+          <div class="inputs">
+          <label for="class_name">
+            Class Name
+          </label>
+          <input type="text" name="class_name" >
+
+          <label for="instructor_name">
+            Instructor Name
+          </label>
+          <input type="text" name="instructor_name" >
+        </div>
+        <input type="submit" value="Create Session">
+      </fieldset>
+    </form>
     
   </body>
 </html>
