@@ -35,6 +35,7 @@ input[type="submit"] {
     font-size: .8em;
 
 }
+
 @media screen and (min-width: 430px){
     legend {
         font-size: 1.75em;
