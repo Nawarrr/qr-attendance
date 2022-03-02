@@ -3,3 +3,4 @@ __pycache__
 app/.env
 .env
 auth.py
+qr-venv

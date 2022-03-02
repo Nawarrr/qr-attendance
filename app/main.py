@@ -1,6 +1,6 @@
 
 from fastapi import FastAPI 
-from routers import classes , student ,auth
+from routers import classes , student 
 import models 
 from database import engine 
 import os
