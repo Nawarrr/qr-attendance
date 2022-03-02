@@ -5,8 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
 
     <title>Class Attendance</title>
     
@@ -14,10 +13,13 @@
   <body style="background-color: white;">
     <h1>Please Enter Your Name</h1>
     <form action="/student/{{ session_id }}" method="post">
-
+      <fieldset>
+       
+        <legend>Welcome</legend>
         <input type="text" name="student_name">
         <input type="text" name="student_info">
         <input type="submit">
+      </fieldset>
     </form>>
 
   </body>

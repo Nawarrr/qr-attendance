@@ -1,22 +1,21 @@
 
 from fastapi import APIRouter, Request, Form, Depends
-from starlette.responses import RedirectResponse
+from starlette.responses import RedirectResponse , FileResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm.session import Session
 from logic.student import take_student_attendance
-from .auth import login
+
 import database
 
 
 router = APIRouter(
-    tags=['student'],
-    prefix="/student"
+    tags=['student']
 )
 
 templates = Jinja2Templates(directory="../templates")
 
 
-@router.get('/{id}')
+@router.get('/student/{id}')
 def student_page(request: Request, id: int):
     """
 
@@ -26,7 +25,8 @@ def student_page(request: Request, id: int):
     return templates.TemplateResponse("student.html", {"request": request, "session_id": id})
 
 
-@router.post('/{id}')
+
+@router.post('/student/{id}')
 async def student_form(request: Request,  id: int, student_name: str = Form(...), student_info: str = Form(...), db: Session = Depends(database.get_db)):
     """
 
