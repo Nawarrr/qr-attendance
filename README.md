@@ -4,8 +4,12 @@ QR Attendance is a web app that helps you take the attendance with just a quick 
 
 
 ## How to use it ?
-- Currently not functional as It must be deployed for people to use it 
-
+1. Visit https://qr-attendance-deployed.herokuapp.com/
+2. Enter your name (Instuctor) and the course name and click create session
+3. Student can use the QR code (you can also send them the link shown) to open a page
+4. Student should enter their name and ID and submit
+5. Click Submit when all the students are done
+6. Click Download to Download the csv file with attendance
 
 ## User Stories
 - Instructor can enter his name and the session name
@@ -20,11 +24,10 @@ QR Attendance is a web app that helps you take the attendance with just a quick 
 
 ## Future Features
 - Authentication for students to assure integrity in the Attendance Taking
-- Database Deletion
 - Better styled website
 - Starting a course and keep track for every session in that course 
 
 
-## Dependencies
+## Technologies Used
 - FastAPI
-- SQLalchemy
+- SQLite
