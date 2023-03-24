@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.templating import Jinja2Templates
-from logic.classes import insert_class_toDB, query_create_csv
-import database
+from ..logic.classes import insert_class_toDB, query_create_csv
+from .. import database
 from sqlalchemy.orm.session import Session
 
 
 router = APIRouter(
     tags=['instructor']
 )
-templates = Jinja2Templates(directory="../templates")
+templates = Jinja2Templates(directory="././templates")
 
 
 @router.get('/', response_class=HTMLResponse)
@@ -24,7 +24,7 @@ def home(request: Request):
 # ---------------------------------------------------DECLARATION-------------------------------- I've Failed using Static Files so I will do This till I fix it--------------------------#
 @router.get('/style.css')
 def show_css():
-    return FileResponse('../templates/style.css')
+    return FileResponse('././templates/style.css')
 
 @router.post('/create', status_code=201)
 def handle_form(request: Request, class_name: str = Form(...), instructor_name: str = Form(...), db: Session = Depends(database.get_db)):
@@ -44,7 +44,7 @@ def handle_form(request: Request, class_name: str = Form(...), instructor_name: 
 
 @router.get('/img.png')
 def show_session():
-    return FileResponse('../templates/img.png')
+    return FileResponse('././templates/img.png')
 
 
 @router.post('/download/{id}')
@@ -62,4 +62,4 @@ def create_csv(request: Request, id: int, db: Session = Depends(database.get_db)
 
 @router.get('/attendance.csv')
 def download_csv():
-    return FileResponse('../templates/attendance.csv')
+    return FileResponse('././templates/attendance.csv')

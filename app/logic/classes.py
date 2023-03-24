@@ -1,5 +1,5 @@
 from datetime import datetime
-import models
+from .. import models
 import os
 import qrcode
 import pandas as pd
@@ -24,7 +24,7 @@ def insert_class_toDB(class_name: str, instructor_name: str, db):
     url = os.environ.get('URL')
     auth_link = f"{url}/student/{new_session.id}"
     img = qrcode.make(auth_link)
-    img.save("../templates/img.png")
+    img.save("././templates/img.png")
 
     return new_session.id, auth_link
 
@@ -45,4 +45,4 @@ def query_create_csv(id: int, db):
         # Adds a new row with every iteration
         df.loc[i] = [record.student_name, record.student_info]
     df.index = df.index + 1
-    return df.to_csv('../templates/attendance.csv')
+    return df.to_csv('././templates/attendance.csv')

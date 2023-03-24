@@ -1,8 +1,8 @@
 
 from fastapi import FastAPI 
-from routers import classes , student 
-import models 
-from database import engine 
+from .routers import classes , student 
+from . import models 
+from .database import engine 
 import os
 from starlette.middleware.sessions import SessionMiddleware
 from dotenv import load_dotenv

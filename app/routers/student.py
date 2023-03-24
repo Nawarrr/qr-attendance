@@ -3,16 +3,16 @@ from fastapi import APIRouter, Request, Form, Depends
 from starlette.responses import RedirectResponse , FileResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm.session import Session
-from logic.student import take_student_attendance
+from ..logic.student import take_student_attendance
 
-import database
+from .. import database
 
 
 router = APIRouter(
     tags=['student']
 )
 
-templates = Jinja2Templates(directory="../templates")
+templates = Jinja2Templates(directory="././templates")
 
 
 @router.get('/student/{id}')

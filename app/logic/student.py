@@ -1,4 +1,4 @@
-import models
+from .. import models
 
 def take_student_attendance(id:int, student_name:str , student_info:str , db):
     """
